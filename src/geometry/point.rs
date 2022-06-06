@@ -54,6 +54,7 @@ where
     DefaultAllocator: Allocator<T, D>,
 {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
+        write!(formatter, "Point ")?;
         self.coords.as_slice().fmt(formatter)
     }
 }
@@ -453,21 +454,32 @@ where
  * Display
  *
  */
+/// ```rust
+/// # use nalgebra::Point3;
+/// let point = Point3::new(1.12345678, 2.12345678, 3.12345678);
+/// let rounded = format!("{:.4}", point);
+/// assert_eq!(rounded, "[1.1235, 2.1235, 3.1235]");
+/// let vertical = format!("{:#}", point);
+/// assert_eq!(vertical, "  ┌            ┐\n  │ 1.12345678 │\n  │ 2.12345678 │\n  │ 3.12345678 │\n  └            ┘\n");
+/// ```
 impl<T: Scalar + fmt::Display, D: DimName> fmt::Display for OPoint<T, D>
 where
     DefaultAllocator: Allocator<T, D>,
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{{")?;
-
-        let mut it = self.coords.iter();
-
-        write!(f, "{}", *it.next().unwrap())?;
-
-        for comp in it {
-            write!(f, ", {}", *comp)?;
+        // Forwards formmating to underlying matrix for pretty printing
+        // if 'alternate' formatting is enabled e.g. println!("{point:#}")
+        // Otherwise, produces compact representation e.g. println!("{point}")
+        if f.alternate() {
+            self.coords.fmt(f)
+        } else {
+            write!(f, "[")?;
+            let mut fields_it = self.coords.iter();
+            write!(f, "{}", *fields_it.next().unwrap())?;
+            for field in fields_it {
+                write!(f, ", {}", *field)?;
+            }
+            write!(f, "]")
         }
-
-        write!(f, "}}")
     }
 }

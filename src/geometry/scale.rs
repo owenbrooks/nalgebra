@@ -32,6 +32,7 @@ pub struct Scale<T, const D: usize> {
 
 impl<T: fmt::Debug, const D: usize> fmt::Debug for Scale<T, D> {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
+        write!(formatter, "Scale ")?;
         self.vector.as_slice().fmt(formatter)
     }
 }
@@ -369,10 +370,19 @@ where
  */
 impl<T: Scalar + fmt::Display, const D: usize> fmt::Display for Scale<T, D> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let precision = f.precision().unwrap_or(3);
-
-        writeln!(f, "Scale {{")?;
-        write!(f, "{:.*}", precision, self.vector)?;
-        writeln!(f, "}}")
+        // Forwards formmating to underlying matrix for pretty printing
+        // if 'alternate' formatting is enabled e.g. println!("{scale:#}")
+        // Otherwise, produces compact representation e.g. println!("{scale}")
+        if f.alternate() {
+            self.vector.fmt(f)
+        } else {
+            write!(f, "[")?;
+            let mut fields_it = self.vector.iter();
+            write!(f, "{}", *fields_it.next().unwrap())?;
+            for field in fields_it {
+                write!(f, ", {}", *field)?;
+            }
+            write!(f, "]")
+        }
     }
 }

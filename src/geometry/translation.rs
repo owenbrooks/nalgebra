@@ -32,6 +32,7 @@ pub struct Translation<T, const D: usize> {
 
 impl<T: fmt::Debug, const D: usize> fmt::Debug for Translation<T, D> {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
+        write!(formatter, "Translation ")?;
         self.vector.as_slice().fmt(formatter)
     }
 }
@@ -284,10 +285,19 @@ where
  */
 impl<T: Scalar + fmt::Display, const D: usize> fmt::Display for Translation<T, D> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let precision = f.precision().unwrap_or(3);
-
-        writeln!(f, "Translation {{")?;
-        write!(f, "{:.*}", precision, self.vector)?;
-        writeln!(f, "}}")
+        // Forwards formmating to underlying matrix for pretty printing
+        // if 'alternate' formatting is enabled e.g. println!("{translation:#}")
+        // Otherwise, produces compact representation e.g. println!("{translation}")
+        if f.alternate() {
+            self.vector.fmt(f)
+        } else {
+            write!(f, "[")?;
+            let mut fields_it = self.vector.iter();
+            write!(f, "{}", *fields_it.next().unwrap())?;
+            for field in fields_it {
+                write!(f, ", {}", *field)?;
+            }
+            write!(f, "]")
+        }
     }
 }
