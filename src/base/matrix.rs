@@ -1886,7 +1886,7 @@ macro_rules! impl_fmt {
 
                 let max_length_with_space = max_length + 1;
 
-                writeln!(f)?;
+                // writeln!(f)?;
                 writeln!(
                     f,
                     "  ┌ {:>width$} ┐",
@@ -1915,8 +1915,8 @@ macro_rules! impl_fmt {
                     "  └ {:>width$} ┘",
                     "",
                     width = max_length_with_space * ncols - 1
-                )?;
-                writeln!(f)
+                )
+                // writeln!(f)
             }
         }
     };
