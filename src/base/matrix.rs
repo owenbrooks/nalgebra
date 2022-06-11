@@ -1886,7 +1886,7 @@ macro_rules! impl_fmt {
 
                 let max_length_with_space = max_length + 1;
 
-                writeln!(f)?;
+                writeln!(f)?; // leading newline to ensure no offset from previous prints
                 writeln!(
                     f,
                     "  ┌ {:>width$} ┐",
@@ -1910,13 +1910,12 @@ macro_rules! impl_fmt {
                     writeln!(f, " │")?;
                 }
 
-                writeln!(
+                write!(
                     f,
                     "  └ {:>width$} ┘",
                     "",
                     width = max_length_with_space * ncols - 1
-                )?;
-                writeln!(f)
+                )
             }
         }
     };
