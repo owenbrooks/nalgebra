@@ -397,11 +397,10 @@ where
     R: AbstractRotation<T, D> + fmt::Display,
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let precision = f.precision().unwrap_or(3);
-
-        writeln!(f, "Similarity {{")?;
-        write!(f, "{:.*}", precision, self.isometry)?;
-        write!(f, "Scaling: {:.*}", precision, self.scaling)?;
-        writeln!(f, "}}")
+        write!(f, "{{ ")?;
+        std::fmt::Display::fmt(&self.isometry, f)?;
+        write!(f, ", scaling: ")?;
+        std::fmt::Display::fmt(&self.scaling, f)?;
+        write!(f, " }}")
     }
 }

@@ -548,11 +548,10 @@ where
     R: fmt::Display,
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let precision = f.precision().unwrap_or(3);
-
-        writeln!(f, "Isometry {{")?;
-        write!(f, "{:.*}", precision, self.translation)?;
-        write!(f, "{:.*}", precision, self.rotation)?;
-        writeln!(f, "}}")
+        write!(f, "{{ translation: ")?;
+        std::fmt::Display::fmt(&self.translation, f)?;
+        write!(f, ", ")?;
+        std::fmt::Display::fmt(&self.rotation, f)?;
+        return write!(f, " }}");
     }
 }
