@@ -550,7 +550,7 @@ where
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{{ translation: ")?;
         std::fmt::Display::fmt(&self.translation, f)?;
-        write!(f, ", ")?;
+        write!(f, ", rotation: ")?;
         std::fmt::Display::fmt(&self.rotation, f)?;
         return write!(f, " }}");
     }
