@@ -197,7 +197,6 @@ pub struct Matrix<T, R, C, S> {
 
 impl<T, R: Dim, C: Dim, S: fmt::Debug> fmt::Debug for Matrix<T, R, C, S> {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
-        write!(formatter, "Matrix ")?;
         self.data.fmt(formatter)
     }
 }
